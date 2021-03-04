@@ -10,13 +10,21 @@ class UserController {
         const { name, email} = req.body;
 
         const schema = yup.object().shape({
-            name: yup.string().required(),
-            email: yup.string().email().required()
+            name: yup.string().required(`O campo "nome" é obrigatório`),
+            email: yup.string().email(`Formato de email inválido"`).required(`O campo "email" é obrigatório`)
         });
 
-        if (!(await schema.isValid(req.body))) {
-            return res.status(400).json({error: 'Validation Failed!!'})
+        // if (!(await schema.isValid(req.body))) {
+        //     return res.status(400).json({error: 'Validation Failed!!'})
+        // };
+
+        try {
+            await schema.validate(req.body, {abortEarly: false}) 
+        } catch(err) {
+            res.status(400).json({error: err})
         }
+
+
 
         const usersRepository = getCustomRepository(UserRepository);
 
