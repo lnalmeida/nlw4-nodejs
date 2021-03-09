@@ -5,6 +5,7 @@ import { SurveyRepository } from '../repositories/SurveyRepository';
 import { SurveyUserRepository } from '../repositories/SurveysUsersRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import SendMailService from '../services/SendMailService';
+import AppError from '../errors/AppError';
 
 class SendMailController {
     async execute(req:Request, res: Response) {
@@ -19,13 +20,15 @@ class SendMailController {
 
         
         if(!userAlreadyExists) {
-            return res.status(400).json({error: 'User does not exists!'});
+            throw new AppError("User does not exists!");
+            // return res.status(400).json({error: 'User does not exists!'});
         };
 
         const surveyAlreadyExists = await surveysRepository.findOne({id: survey_id});
 
         if(!surveyAlreadyExists) {
-            return res.status(400).json({error: 'Survey does not exists!'});
+            throw new AppError("Survey does not exists!");
+            // return res.status(400).json({error: 'Survey does not exists!'});
         };
 
         
